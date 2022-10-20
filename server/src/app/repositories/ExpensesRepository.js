@@ -1,10 +1,10 @@
 const db = require('../../database');
 
 class ExpensesRepository {
-  async findAll(orderBy = 'ASC') {
-    const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-    const rows = await db.query(`SELECT * FROM expenses ORDER BY value ${direction}`);
-
+  async findAll({ orderBy = 'ASC', residenceId }) {
+    console.log(orderBy);
+    // const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+    const rows = await db.query('SELECT * FROM expenses S WHERE S.residence = $1', [residenceId]);
     return rows;
   }
 
@@ -15,14 +15,14 @@ class ExpensesRepository {
   }
 
   async create({
-    category, info, value, registerdate, duedate, payed, userid,
+    category, description, value, createdAt, expireAt, paid, residenceId,
   }) {
     const [row] = await db.query(`
-    INSERT INTO expenses(category, info, value, createdAt, expireAt, paid,
+    INSERT INTO expenses(category, description, value, createdAt, expireAt, paid,
                           userid)
     VALUES($1,$2,$3,$4,$5,$6,$7)
     RETURNING *
-    `, [category, info, value, registerdate, duedate, payed, userid]);
+    `, [category, description, value, createdAt, expireAt, paid, residenceId]);
 
     return row;
   }

@@ -7,7 +7,7 @@ CREATE TABLE IF NOT EXISTS users(
   name VARCHAR(255) NOT NULL,
   password VARCHAR(255) NOT NULL,
   email VARCHAR(255) NOT NULL,
-  group VARCHAR(255),
+  residence VARCHAR(255),
   PRIMARY KEY(id),
   UNIQUE(email)
 );

@@ -3,7 +3,8 @@ const ExpensesRepository = require('../repositories/ExpensesRepository');
 class ExpenseController {
   async index(request, response) {
     const { orderBy } = request.query;
-    const expenses = await ExpensesRepository.findAll(orderBy);
+    const { residenceId } = request.params;
+    const expenses = await ExpensesRepository.findAll({ orderBy, residenceId });
 
     response.json(expenses);
   }
@@ -21,7 +22,7 @@ class ExpenseController {
 
   async store(request, response) {
     const {
-      category, info, value, registerdate, dueDate, payed, userid,
+      category, description, value, createdAt, expireAt, paid, residenceId,
     } = request.body;
     console.log(request.body);
     if (!category) {
@@ -32,24 +33,24 @@ class ExpenseController {
       return response.status(400).json({ error: 'Informe o valor da despesa' });
     }
 
-    if (!registerdate) {
+    if (!createdAt) {
       return response.status(400).json({ error: 'Informe a data de registro' });
     }
 
-    if (!dueDate) {
+    if (!expireAt) {
       return response.status(400).json({ error: 'Informe a data de vencimento da despesa' });
     }
 
-    if (!payed) {
+    if (!paid) {
       return response.status(400).json({ error: 'Informe o status da despesa' });
     }
 
-    if (!userid) {
+    if (!residenceId) {
       return response.status(400).json({ error: 'Informe o id do criador da despesa' });
     }
 
     const expense = await ExpensesRepository.create({
-      category, info, value, registerdate, dueDate, payed, userid,
+      category, description, value, createdAt, expireAt, paid, residenceId,
     });
 
     response.json(expense);
@@ -58,7 +59,7 @@ class ExpenseController {
   async update(request, response) {
     const { id } = request.params;
     const {
-      category, info, value, dueDate, payed,
+      category, info, value, expireAt, paid,
     } = request.body;
 
     const expensesExists = await ExpensesRepository.findById(id);
@@ -74,12 +75,12 @@ class ExpenseController {
       return response.status(400).json({ error: 'Digite o valor da despesa' });
     }
 
-    if (!dueDate) {
+    if (!expireAt) {
       return response.status(400).json({ error: 'Digite a data de vencimento' });
     }
 
     const expense = await ExpensesRepository.update(id, {
-      category, info, value, dueDate, payed,
+      category, info, value, expireAt, paid,
     });
 
     response.json(expense);

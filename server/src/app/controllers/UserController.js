@@ -3,8 +3,8 @@ const UsersRepository = require('../repositories/UsersRepository');
 class UserController {
   async index(request, response) {
     const { orderBy } = request.query;
-    const users = await UsersRepository.findAll(orderBy);
-
+    const { residenceId } = request.params;
+    const users = await UsersRepository.findAll({ orderBy, residenceId });
     response.header('Access-Control-Allow-Origin', '*');
     response.json(users);
   }
@@ -85,7 +85,7 @@ class UserController {
 
   async update(request, response) {
     const {
-      email, group, type,
+      email, residence, type,
     } = request.body;
 
     const usersExists = await UsersRepository.findByEmail(email);
@@ -99,7 +99,7 @@ class UserController {
     }
 
     const user = await UsersRepository.update({
-      email, group,
+      email, residence,
     });
 
     response.header('Access-Control-Allow-Origin', '*');

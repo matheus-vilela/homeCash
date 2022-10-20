@@ -1,9 +1,10 @@
 const db = require('../../database');
 
 class UsersRepository {
-  async findAll(orderBy = 'ASC') {
-    const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-    const rows = await db.query(`SELECT * FROM users ORDER BY name ${direction}`);
+  async findAll({ orderBy = 'ASC', residenceId }) {
+    console.log(orderBy, residenceId);
+    // const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
+    const rows = await db.query('SELECT * FROM users U WHERE U.residence = $1', [residenceId]);
     return rows.map((row) => ({ ...row, password: '' }));
   }
 
@@ -24,15 +25,13 @@ class UsersRepository {
     return row;
   }
 
-  async update(email, {
-    group,
-  }) {
+  async update({ email, residence }) {
     const [row] = await db.query(`
       UPDATE users U
-      SET group = $1
+      SET residence = $1
       WHERE U.email = $2
       RETURNING *
-    `, [group, email]);
+    `, [residence, email]);
     return row;
   }
 
