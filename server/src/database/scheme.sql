@@ -1,0 +1,26 @@
+CREATE DATABASE homecash;
+
+CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+
+CREATE TABLE IF NOT EXISTS users(
+  id UUID NOT NULL UNIQUE SET DEFAULT uuid_generate_v4(),
+  name VARCHAR(255) NOT NULL,
+  password VARCHAR(255) NOT NULL,
+  email VARCHAR(255) NOT NULL,
+  group VARCHAR(255),
+  PRIMARY KEY(id),
+  UNIQUE(email)
+);
+
+CREATE TABLE IF NOT EXISTS expenses(
+  id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
+  category VARCHAR(255) NOT NULL,
+  info VARCHAR(255),
+  value FLOAT NOT NULL,
+  createdAt VARCHAR(255) NOT NULL,
+  expireAt VARCHAR(255) NOT NULL,
+  paid BOOLEAN NOT NULL DEFAULT FALSE,
+  userID UUID NOT NULL,
+  PRIMARY KEY(id),
+  FOREIGN KEY(userID) REFERENCES users(id)
+);
