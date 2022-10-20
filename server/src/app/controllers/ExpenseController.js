@@ -41,10 +41,6 @@ class ExpenseController {
       return response.status(400).json({ error: 'Informe a data de vencimento da despesa' });
     }
 
-    if (!paid) {
-      return response.status(400).json({ error: 'Informe o status da despesa' });
-    }
-
     if (!residenceId) {
       return response.status(400).json({ error: 'Informe o id do criador da despesa' });
     }
@@ -59,28 +55,12 @@ class ExpenseController {
   async update(request, response) {
     const { id } = request.params;
     const {
-      category, info, value, expireAt, paid,
+      paid,
     } = request.body;
 
-    const expensesExists = await ExpensesRepository.findById(id);
-    if (!expensesExists) {
-      return response.status(404).json({ error: 'Você não possui despesas' });
-    }
-
-    if (!category) {
-      return response.status(400).json({ error: 'Digite a categoria da despesa' });
-    }
-
-    if (!value) {
-      return response.status(400).json({ error: 'Digite o valor da despesa' });
-    }
-
-    if (!expireAt) {
-      return response.status(400).json({ error: 'Digite a data de vencimento' });
-    }
-
-    const expense = await ExpensesRepository.update(id, {
-      category, info, value, expireAt, paid,
+    const expense = await ExpensesRepository.update({
+      id,
+      paid,
     });
 
     response.json(expense);

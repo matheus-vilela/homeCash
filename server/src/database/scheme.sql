@@ -14,13 +14,12 @@ CREATE TABLE IF NOT EXISTS users(
 
 CREATE TABLE IF NOT EXISTS expenses(
   id UUID NOT NULL UNIQUE DEFAULT uuid_generate_v4(),
-  category VARCHAR(255) NOT NULL,
-  info VARCHAR(255),
   value FLOAT NOT NULL,
+  category VARCHAR(255) NOT NULL,
+  description VARCHAR(255),
   createdAt VARCHAR(255) NOT NULL,
   expireAt VARCHAR(255) NOT NULL,
   paid BOOLEAN NOT NULL DEFAULT FALSE,
-  userID UUID NOT NULL,
-  PRIMARY KEY(id),
-  FOREIGN KEY(userID) REFERENCES users(id)
+  residenceId VARCHAR(255) NOT NULL,
+  PRIMARY KEY(id)
 );

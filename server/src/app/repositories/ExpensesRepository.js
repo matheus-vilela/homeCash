@@ -4,7 +4,7 @@ class ExpensesRepository {
   async findAll({ orderBy = 'ASC', residenceId }) {
     console.log(orderBy);
     // const direction = orderBy.toUpperCase() === 'DESC' ? 'DESC' : 'ASC';
-    const rows = await db.query('SELECT * FROM expenses S WHERE S.residence = $1', [residenceId]);
+    const rows = await db.query('SELECT * FROM expenses S WHERE S.residenceId = $1', [residenceId]);
     return rows;
   }
 
@@ -19,7 +19,7 @@ class ExpensesRepository {
   }) {
     const [row] = await db.query(`
     INSERT INTO expenses(category, description, value, createdAt, expireAt, paid,
-                          userid)
+                          residenceId)
     VALUES($1,$2,$3,$4,$5,$6,$7)
     RETURNING *
     `, [category, description, value, createdAt, expireAt, paid, residenceId]);
@@ -27,15 +27,13 @@ class ExpensesRepository {
     return row;
   }
 
-  async update(id, {
-    category, info, value, payed, dueDate,
-  }) {
+  async update({ id, paid }) {
     const [row] = await db.query(`
       UPDATE expenses
-      SET category = $1, info = $2, value = $3, paied = $4, expireAt = $5
-      WHERE id = $6
+      SET paid = $1
+      WHERE id = $2
       RETURNING *
-    `, [category, info, value, payed, dueDate, id]);
+    `, [paid, id]);
 
     return row;
   }
